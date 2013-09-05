@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RootViewController : UITableViewController
+@interface RootViewController : UITableViewController<UIViewControllerRestoration>
+{
+    NSMutableArray *heroData;
+    NSMutableArray *heroSections;
+    NSTimer* timer_;
+    UIImage * image_;
+
+}
+
+- (void) createHeroData;
+-(id)initWithImage:(UIImage * )image;
 
 @end

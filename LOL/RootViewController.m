@@ -7,12 +7,36 @@
 //
 
 #import "RootViewController.h"
+#import "HeroDetailViewController.h"
 
 @implementation RootViewController
 
+- (void)createHeroData
+{
+    NSMutableArray *demaxiyaHeros;
+    NSMutableArray *nuokesasiHeros;
+    
+    heroSections = [[NSMutableArray alloc] initWithObjects:@"德 玛 西 亚",@"诺 克 萨 斯", nil];
+    demaxiyaHeros = [[NSMutableArray alloc] init];
+    nuokesasiHeros = [[NSMutableArray alloc] init];
+    
+    [demaxiyaHeros addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:@"盖伦",@"name",@"gailun.jpg",@"picture",@"http://games.qq.com/zt2011/lolchampions/garen.htm",@"url", nil]];
+    [demaxiyaHeros addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:@"蛮王",@"name",@"manwang.jpg",@"picture",@"http://games.qq.com/zt2011/lolchampions/tryndamere.htm",@"url", nil]];
+    [demaxiyaHeros addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:@"易大师",@"name",@"jiansheng.jpg",@"picture",@"http://games.qq.com/zt2011/lolchampions/yi.htm",@"url", nil]];
+    [demaxiyaHeros addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:@"赵信",@"name",@"debang.jpg",@"picture",@"http://games.qq.com/zt2011/lolchampions/xinzhao.htm",@"url", nil]];
+    
+    [nuokesasiHeros addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:@"卡特琳娜",@"name",@"kate.jpg",@"picture",@"http://games.qq.com/zt2011/lolchampions/katarina.htm",@"url", nil]];
+    [nuokesasiHeros addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:@"鬼术妖姬",@"name",@"guishu.jpg",@"picture",@"http://games.qq.com/zt2011/lolchampions/leblanc.htm",@"url", nil]];
+    
+    heroData = [[NSMutableArray alloc] initWithObjects:demaxiyaHeros,nuokesasiHeros, nil];
+    
+    [demaxiyaHeros release];
+    [nuokesasiHeros release];
+}
 
 - (void)viewDidLoad
 {
+    [self createHeroData];
     [super viewDidLoad];
 }
 
@@ -47,12 +71,12 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return [heroSections count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 0;
+    return [[heroData objectAtIndex:section] count];
 }
 
 // Customize the appearance of table view cells.
@@ -66,7 +90,17 @@
     }
 
     // Configure the cell.
+    [[cell textLabel] setText:[[[heroData objectAtIndex:indexPath.section] objectAtIndex: indexPath.row] objectForKey:@"name"]];
+    [[cell imageView] setImage:[UIImage imageNamed:[[[heroData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]objectForKey:@"picture"]]];
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [heroSections objectAtIndex:section];
 }
 
 /*
@@ -112,13 +146,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    /*
-    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-    // ...
-    // Pass the selected object to the new view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
-    [detailViewController release];
-	*/
+    HeroDetailViewController *heroDetail = [[HeroDetailViewController alloc] initWithNibName:@"HeroDetailViewController" bundle:nil];
+    
+    heroDetail.detailURL = [[NSURL alloc] initWithString:[[[heroData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"url"]];
+    heroDetail.title = [[[heroData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"name"];
+    [self.navigationController pushViewController:heroDetail animated:YES];
+    [heroDetail release];
 }
 
 - (void)didReceiveMemoryWarning
@@ -139,6 +172,8 @@
 
 - (void)dealloc
 {
+    [heroData release];
+    [heroSections release];
     [super dealloc];
 }
 
